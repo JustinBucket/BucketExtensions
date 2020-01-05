@@ -1,0 +1,8 @@
+.vscode
+bin
+obj
+*.db*
+appsettings.json
+omnisharp.json
+launchSettings.json
+tasks.json
