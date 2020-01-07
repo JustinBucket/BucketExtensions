@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 
 namespace BucketExtensions.Consoles
 {
@@ -17,7 +16,7 @@ namespace BucketExtensions.Consoles
 
             foreach (var i in menu.MenuOptions)
             {
-                Console.WriteLine($"\t{bullet}\t{i}");
+                Console.WriteLine($"{bullet}\t{i}");
             }
             Console.WriteLine();
         }
