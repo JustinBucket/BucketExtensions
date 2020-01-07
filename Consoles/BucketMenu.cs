@@ -1,25 +1,25 @@
 using System;
-using System.Linq;
+using System.Collections.Generic;
 
 namespace BucketExtensions.Consoles
 {
-    public class BucketMenu
+    public static class BucketMenu
     {
-        public String[] MenuOptions { get; set; }
-        public String Title { get; set; }
-        public BucketMenu(string[] menuOptions)
+        public static void DisplayMenuOptions(this IBucketMenu menu, char bullet)
         {
-            MenuOptions = menuOptions;
-        }
+            Console.WriteLine("Menu options:");
+            Console.WriteLine();
+            
+            if (menu.MenuOptions == null) 
+            {
+                throw new ArgumentNullException("The menu does not have any options initialized");
+            }
 
-        public bool ValidateCommand(string command) 
-        {
-            var option = MenuOptions.FirstOrDefault(x => x.ToLower() == command.ToLower());
-
-            if (!String.IsNullOrWhiteSpace(option))
-                return true;
-
-            return false;
+            foreach (var i in menu.MenuOptions)
+            {
+                Console.WriteLine($"\t{bullet}\t{i}");
+            }
+            Console.WriteLine();
         }
     }
 }
