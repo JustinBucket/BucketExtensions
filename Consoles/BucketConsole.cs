@@ -6,31 +6,57 @@ namespace BucketExtensions.Consoles
     public class BucketConsole
     {
         public int ColumnCount { get; set; }
+        public int RowCount { get; set; }
         public string Title { get; set; }
         public char Delimiter { get; set; }
-        public BucketConsole(int columnCount, string title, char delimiter) 
+        private string FillerLine { get; set; }
+        private string EdgeLine { get; set; }
+        public List<BucketMenu> Menus { get; private set; }
+        public BucketConsole(int columnCount, int rowCount, string title, char delimiter) 
         {
             ColumnCount = columnCount;
             Title = title;
             Delimiter = delimiter;
+            RowCount = rowCount;
+            FillerLine = Delimiter + new String(' ', ColumnCount - 2) + Delimiter;
+            EdgeLine = new String(delimiter, ColumnCount);
         }
         public void DisplayConsoleTitle() 
         {
-            Console.WriteLine(new String('*', ColumnCount));
-            Console.WriteLine(Delimiter + new String(' ', ColumnCount - 2) + Delimiter);
+            
+            var titleLine = GenerateTitleLine();
 
+            Console.WriteLine(EdgeLine);
+            Console.WriteLine(FillerLine);
+            Console.WriteLine(titleLine);
+
+            for (int i = 0; i < RowCount - 5; i++)
+            {
+                Console.WriteLine(FillerLine);
+            }
+
+            Console.WriteLine(FillerLine);
+            Console.WriteLine(EdgeLine);
+        }
+        private string GenerateTitleLine()
+        {
             int charsToAdd = (int)Math.Floor(((double)ColumnCount - (double)Title.Length)/2);
 
-            var returnString = Delimiter + Title.PadLeft(Title.Length + charsToAdd - 1, ' ');
-            returnString = returnString.PadRight(returnString.Length + charsToAdd - 1, ' ') + Delimiter;
+            var titleLine = Delimiter + Title.PadLeft(Title.Length + charsToAdd - 1, ' ');
+            titleLine = titleLine.PadRight(titleLine.Length + charsToAdd - 1, ' ') + Delimiter;
 
-            if (returnString.Length < ColumnCount)
-                returnString.Replace(" *", "  *");
+            if (titleLine.Length < ColumnCount)
+                titleLine.Replace(" *", "  *");
 
-            Console.WriteLine(returnString);
-
-            Console.WriteLine(Delimiter + new String(' ', ColumnCount - 2) + Delimiter);
-            Console.WriteLine(new String(Delimiter, ColumnCount));
+            return titleLine;
+        }
+        public BucketMenu GenerateMenu(char bullet, string title)
+        {
+            var newMenu = new BucketMenu(bullet, title, this);
+            
+            Menus.Add(newMenu);
+            
+            return newMenu;
         }
     }
 }
