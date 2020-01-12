@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 
-namespace CLI.Helpers
+namespace BucketExtensions.CLI
 {
     public class CliMenu
     {
@@ -28,13 +28,32 @@ namespace CLI.Helpers
             
             return menu;
         }
-        public void CallCommand(string commandRequest) 
+        public void CallCommand(CliCommand command) 
         {
-            var command = Functions.FirstOrDefault(x => x.Name.ToLower() == commandRequest.ToLower());
-            if (command == null)
-                throw new ArgumentException("command not found");
+            var function = Functions.FirstOrDefault(x => x.Name.ToLower() == command.FunctionName.ToLower());
+            
+            if (function == null)
+                InvalidCommandDisplay(command.FunctionName);
 
-            command.Invoke();
+            else
+                function.Invoke(command.Modifiers);
         }
+        public void DisplayHelp() 
+        {
+            Console.WriteLine();
+            Console.WriteLine("available functions:");
+            Console.WriteLine();
+            foreach (var i in Functions)
+            {
+                Console.WriteLine($"\t- {i.Name}: {i.Description}");
+            }
+        }
+        public void InvalidCommandDisplay(string function)
+        {
+            Console.WriteLine();
+            Console.WriteLine($"function '{function}' is not recognized");
+            DisplayHelp();
+        }
+
     }
 }
