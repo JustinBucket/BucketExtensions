@@ -137,5 +137,19 @@ namespace BucketExtensions.Strings
 
             return returnString;
         }
+
+        public static string ClassToString<T>(this T input)
+        {
+            var properties = typeof(T).GetProperties();
+
+            var displayString = $"{typeof(T)}:";
+
+            foreach (var i in properties)
+            {
+                displayString += $" {i.Name}: {i.GetValue(input)};";
+            }
+
+            return displayString;
+        }
     }
 }
