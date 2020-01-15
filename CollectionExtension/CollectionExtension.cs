@@ -16,5 +16,17 @@ namespace BucketExtensions.CollectionExtensions
             
             return returnCollection;
         }
+        
+        public static IList<T> Slice<T>(this IList<T> collection, int start)
+        {
+            var returnCollection = new T[collection.Count - start];
+
+            for (int i = start; i < collection.Count; i++)
+            {
+                returnCollection[i - start] = collection[i];
+            }
+
+            return returnCollection;
+        }
     }
 }
