@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace BucketExtensions.Enums
+namespace BucketExtensions
 {
     public static class EnumExtensions
     {

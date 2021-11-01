@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace BucketExtensions.Strings
+namespace BucketExtensions
 {
     public static class StringExtensions {
         
@@ -150,6 +150,104 @@ namespace BucketExtensions.Strings
             }
 
             return displayString;
+        }
+
+        public static int CalcLevDistance(this string source, string target, bool ignoreCase = false)
+        {
+            if (string.IsNullOrWhiteSpace(source) && string.IsNullOrWhiteSpace(target))
+            {
+                return 0;
+            }
+
+            if (string.IsNullOrEmpty(source))
+            {
+                return target.Length;
+            }
+
+            if (string.IsNullOrEmpty(target))
+            {
+                return source.Length;
+            }
+
+            if (ignoreCase)
+            {
+                source = source.ToLower();
+                target = target.ToLower();
+            }
+
+            var sourceLength = source.Length;
+            var targetLength = target.Length;
+
+            if (sourceLength > targetLength)
+            {
+                Swap(ref target, ref source);
+                Swap(ref sourceLength, ref targetLength);
+            }
+
+            var maxi = sourceLength;
+            var maxj = targetLength;
+
+            int[] dCurrent = new int[maxi + 1];
+            int [] dMinus1 = new int[maxi + 1];
+            int[] dMinus2 = new int[maxi + 1];
+            int[] dSwap;
+
+            for (int i = 0; i <= maxi; i++)
+            {
+                dCurrent[i] = i;
+            }
+
+            int jm1 = 0, im1 = 0, im2 = -1;
+
+            for (int j = 1; j <= maxj; j++)
+            {
+                dSwap = dMinus2;
+                dMinus2 = dMinus1;
+                dMinus1 = dCurrent;
+                dCurrent = dSwap;
+
+                int minDistance = int.MaxValue;
+                dCurrent[0] = j;
+                im1 = 0;
+                im2 = -1;
+
+                for (int i = 1; i <= maxi; i++)
+                {
+                    int cost = source[im1] == source[jm1] ? 0 : 1;
+
+                    int del = dCurrent[im1] + 1;
+                    int ins = dMinus1[i] + 1;
+                    int sub = dMinus1[im1] + cost;
+
+                    int min = (del > ins) ? (ins > sub ? sub : ins) : (del > sub ? sub : del);
+
+                    if (i > 1 && j > 1 && source[im2] == target[jm1] && source[im1] == target[j - 2])
+                    {
+                        min = Math.Min(min, dMinus2[im2] + cost);
+                    }
+
+                    dCurrent[i] = min;
+                    if (min < minDistance)
+                    {
+                        minDistance = min;
+                    }
+                    im1++;
+                    im2++;
+                }
+
+                jm1++;
+            }
+
+            var result = dCurrent[maxi];
+            return result;
+
+        }
+
+        private static void Swap<T>(ref T arg1, ref T arg2)
+        {
+            T temp = arg1;
+            arg1 = arg2;
+            arg2 = temp;
         }
     }
 }
